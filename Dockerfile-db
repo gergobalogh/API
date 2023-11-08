@@ -1,0 +1,8 @@
+# Dockerfile-db
+FROM mariadb:latest
+
+# Environment variables for Database
+ENV MYSQL_ROOT_PASSWORD=my-secret-pw
+ENV MYSQL_DATABASE=mydb
+ENV MYSQL_USER=user
+ENV MYSQL_PASSWORD=password
