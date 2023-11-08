@@ -1,0 +1,16 @@
+# Dockerfile-react
+
+# Stage 1: Build the react application
+FROM node:18.17-alpine3.17 as build
+
+RUN mkdir "/var/ui"
+
+
+WORKDIR /var/ui
+
+COPY ui /var/ui
+
+RUN npm install
+COPY . .
+CMD ["npm", "run", "dev"]
+

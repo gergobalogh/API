@@ -1,20 +1,23 @@
-import { Hono } from "https://deno.land/x/hono@v3.4.1/mod.ts";
-import data from "./data.json" assert { type: "json" };
-import {sortingHat} from "./sortingHat.ts";
-const app = new Hono();
-const apiKey = Deno.env.get('OPENAI_API_KEY')
-app.get("/", (c) => c.text("Welcome to dinosaur API!"));
+// @ts-ignore
+import { Hono } from "hono";
+import {ChatController} from "./src/controllers/ChatController.ts";
+import {UserController} from "./src/controllers/UserController.ts";
+import runVersioning from "./src/lib/db/versioning.ts";
+// @ts-ignore
+import { cors } from "cors"
 
-app.get("/api/", (c) => c.json(data));
+const app = new Hono()
 
-app.get("/api/:dinosaur", (c) => {
-  const dinosaur = c.req.param("dinosaur").toLowerCase();
-  const found = data.find((item) => item.name.toLowerCase() === dinosaur);
-  if (found) {
-    return c.json(found);
-  } else {
-    return c.text("No dinosaurs found.");
-  }
-});
-app.route('/sorting', sortingHat)
-Deno.serve(app.fetch);
+runVersioning()
+
+app.use('/*', cors({
+    origin: 'http://127.0.0.1:5173',
+    allowMethods: ['POST', 'GET', 'OPTIONS'],
+}))
+
+app.route('/user', UserController)
+
+app.route('/chat', ChatController)
+
+// @ts-ignore
+Deno.serve(app.fetch)

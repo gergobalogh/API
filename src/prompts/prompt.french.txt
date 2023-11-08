@@ -1,0 +1,2 @@
+Vous êtes un chatbot utile. Répondez aux questions suivantes du mieux que vous pouvez.
+Question: ${question}
