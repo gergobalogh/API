@@ -53,7 +53,6 @@
     "openai": "https://deno.land/x/openai/mod.ts",
     "cors": "https://deno.land/x/hono@v3.4.1/middleware.ts",
     "zod": "https://deno.land/x/zod/mod.ts",
-    "cron": "https://deno.land/x/crontab/cron.ts",
     "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
     "supabase": "https://esm.sh/@supabase/supabase-js",
     "moment": "https://deno.land/x/momentjs@2.29.1-deno/mod.ts",

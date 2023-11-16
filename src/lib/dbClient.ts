@@ -47,7 +47,11 @@ export const updateByTitle = async (title, updateColumn, updateValue) => {
         throw new Error(error.message)
     }
 }
-export const createAuthenticatedClient = async () => {
+export const createAuthenticatedClient = async () => {x
+    console.log(Deno.env.get('SUPABASE_API_KEY'))
+    console.log(Deno.env.get('SUPABASE_URL'))
+    console.log(Deno.env.get('SUPABASE_EMAIL'))
+    console.log(Deno.env.get('SUPABASE_PASS'))
     const kv = await Deno.openKv();
     const jwt = await kv.get(['SUPABASE_JWT_TOKEN'])
     let token;
