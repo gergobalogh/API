@@ -1,4 +1,4 @@
-import {Houston, FileTransport} from "houston"
+import {Houston, ConsoleTransport} from "houston"
 export const Logger = new Houston([
-    new FileTransport('./logs')
+    new ConsoleTransport()
 ])
