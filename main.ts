@@ -1,8 +1,5 @@
-// @ts-ignore
 import {Hono} from "hono";
-// @ts-ignore
 import {cors} from "cors"
-import {Cron} from "cron";
 import {News} from "./src/controllers/News.ts";
 import * as cheerio from "cheerio";
 import {
@@ -125,7 +122,7 @@ const calculateScore = async () => {
 }
 // calculateScore()
 app.use('/*', cors({
-    origin: 'http://127.0.0.1:5173',
+    origin: 'https://flat-goat-98.deno.dev/',
     allowMethods: ['POST', 'GET', 'OPTIONS'],
 }))
 app.route('/news', News)
