@@ -47,7 +47,7 @@ export const updateByTitle = async (title, updateColumn, updateValue) => {
         throw new Error(error.message)
     }
 }
-export const createAuthenticatedClient = async () => {x
+export const createAuthenticatedClient = async () => {
     console.log(Deno.env.get('SUPABASE_API_KEY'))
     console.log(Deno.env.get('SUPABASE_URL'))
     console.log(Deno.env.get('SUPABASE_EMAIL'))
