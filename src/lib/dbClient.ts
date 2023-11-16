@@ -54,6 +54,25 @@ export const createAuthenticatedClient = async () => {
     console.log(Deno.env.get('SUPABASE_PASS'))
     const kv = await Deno.openKv();
     const jwt = await kv.get(['SUPABASE_JWT_TOKEN'])
+    if(jwt.value === null) {
+        const client = await createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'))
+        const {data, error} = await client.auth.signInWithPassword({
+            email: Deno.env.get('SUPABASE_EMAIL'),
+            password: Deno.env.get('SUPABASE_PASS')
+        })
+        if (error && error.message) {
+            Logger.error(error.message)
+            throw new Error(error.message)
+        }
+        await kv.set(['SUPABASE_JWT_TOKEN'], data.session.access_token)
+        return createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
+            global: {
+                headers: {
+                    'Authorization': 'Bearer ' + data.session.access_token
+                }
+            }
+        })
+    }
     let token;
     const client = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
         global: {
