@@ -1,5 +1,4 @@
-export default {
-    logDb: (message: string) => console.log('%c' + message + '\n', 'color: blue'),
-    logGpt: (message: string) => console.log('%c' + message + '\n', 'color: green'),
-    logError: (message: string) => console.log('%c' + message + '\n', 'color: red')
-}
+import {Houston, FileTransport} from "houston"
+export const Logger = new Houston([
+    new FileTransport('./logs')
+])
