@@ -54,7 +54,6 @@ export const createAuthenticatedClient = async () => {
     console.log(Deno.env.get('SUPABASE_PASS'))
     const kv = await Deno.openKv();
     const jwt = await kv.get(['SUPABASE_JWT_TOKEN'])
-    console.log(jwt.value)
     let token;
     const client = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
         global: {
@@ -66,6 +65,8 @@ export const createAuthenticatedClient = async () => {
     const {data, error} = await client
         .from('users')
         .select()
+    console.log(data)
+    console.log(error)
     if (data && data[0] && data[0].id === 1 && data[0].name === "Jack") {
         console.log("HAS JWT")
         return createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
