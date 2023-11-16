@@ -22,23 +22,6 @@ import {Logger} from "./src/lib/logging/logger.ts";
 
 const app = new Hono()
 
-// const cron = new Cron();
-// cron.add(
-//     '0 */2 * * *',
-//     async () => {
-//         // const news = await fetch(url)
-//         // const html = await news.text()
-//         // const $ = cheerio.load(html)
-//     }
-// )
-// cron.add(
-//     "* * * * *",
-//     async () => {
-//         const news = await selectOneForCompletion()
-//     }
-//
-// )
-// cron.start()
 const getNews = async () => {
     try {
         const url = 'https://www.g4media.ro/'
