@@ -4,7 +4,7 @@ import {Logger} from "./logging/logger.ts";
 import {functionManager} from "../service/functionMananagerService.ts";
 import {defaultGPT} from "../interfaces/GPT.ts";
 import {GPT} from "../interfaces/GPT.ts";
-// @ts-ignore
+
 const gptAPI = new OpenAI(Deno.env.get('OPENAI_API_KEY'))
 
 

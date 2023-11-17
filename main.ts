@@ -4,18 +4,18 @@ import {News} from "./src/controllers/News.ts";
 import {calculateScore, getAttributeValues, getNews} from "./src/crons/cronjob.ts";
 
 const app = new Hono()
-
-Deno.cron("Fetch news", "0 */2 * * *", () => {
-    console.log("Getting the news");
-    getNews()
-});
-Deno.cron("Get attributes", "* * * * *", () => {
-    console.log('Getting the attributes for news')
-    getAttributeValues()
-})
-Deno.cron("Calculate score", "*/2 * * * *", () => {
-    calculateScore()
-})
+//
+// Deno.cron("Fetch news", "0 */2 * * *", () => {
+//     console.log("Getting the news");
+//     getNews()
+// });
+// Deno.cron("Get attributes", "* * * * *", () => {
+//     console.log('Getting the attributes for news')
+//     getAttributeValues()
+// })
+// Deno.cron("Calculate score", "*/2 * * * *", () => {
+//     calculateScore()
+// })
 app.use('/*', cors({
     origin: 'https://flat-goat-98.deno.dev/',
     allowMethods: ['POST', 'GET', 'OPTIONS'],
