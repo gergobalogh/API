@@ -1,14 +1,12 @@
 // @ts-ignore
 import {OpenAI} from "openai"
 import {Logger} from "./logging/logger.ts";
-import {functionManager} from "../service/functionMananagerService.ts";
 import {defaultGPT} from "../interfaces/GPT.ts";
 import {GPT} from "../interfaces/GPT.ts";
 
 const gptAPI = new OpenAI(Deno.env.get('OPENAI_API_KEY'))
 
 const callOpenAIAPI = async (gptParams: GPT) => {
-    Logger.info('Calling OpenAI API')
     const result = await gptAPI.chat.completions.create({
         model: gptParams.model,
         messages: gptParams.messages,

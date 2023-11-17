@@ -10,7 +10,6 @@ const app = new Hono()
 //     getNews()
 // });
 Deno.cron("Get attributes", "* * * * *", () => {
-    console.log('Getting the attributes for news')
     getAttributeValues()
 })
 Deno.cron("Calculate score", "*/2 * * * *", () => {
