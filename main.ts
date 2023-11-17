@@ -16,6 +16,7 @@ const app = new Hono()
 // Deno.cron("Calculate score", "*/2 * * * *", () => {
 //     calculateScore()
 // })
+// getNews()
 app.use('/*', cors({
     origin: 'https://flat-goat-98.deno.dev/',
     allowMethods: ['POST', 'GET', 'OPTIONS'],
