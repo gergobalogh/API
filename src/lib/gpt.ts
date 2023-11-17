@@ -31,7 +31,7 @@ export const determineScale = async (message: string) => {
     if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
-        return 0
+        return ''
     }
 }
 export const determineMagnitude = async (message: string) => {
@@ -49,7 +49,7 @@ export const determineMagnitude = async (message: string) => {
     if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
-        return 0
+        return ''
     }
 }
 export const determinePotential = async (message: string) => {
@@ -67,7 +67,7 @@ export const determinePotential = async (message: string) => {
     if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
-        return 0
+        return ''
     }
 }
 
@@ -86,7 +86,7 @@ export const determineNovelty = async (message: string) => {
     if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
-        return 0
+        return ''
     }
 }
 
@@ -105,7 +105,7 @@ export const determineSignificance = async (message: string) => {
     if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
-        return 0
+        return ''
     }
 }
 
@@ -124,7 +124,7 @@ export const determineActionability = async (message: string) => {
     if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
-        return 0
+        return ''
     }
 }
 
@@ -144,7 +144,7 @@ export const determineLongTermConsequences = async (message: string) => {
     if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
-        return 0
+        return ''
     }
 }
 export const translateDate = async (message: string) => {
@@ -184,6 +184,6 @@ export const determineCategory = async (message: string) => {
     if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
         return Number(result.choices[0].message.content)
     } else {
-        return ''
+        return 0
     }
 }

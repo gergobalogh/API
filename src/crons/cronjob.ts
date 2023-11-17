@@ -19,9 +19,6 @@ import {
 import {Logger} from "../lib/logging/logger.ts";
 import * as cheerio from "cheerio";
 
-export const test = async () => {
-    await calculateScore()
-}
 
 export const getNews = async () => {
     try {
@@ -57,7 +54,7 @@ export const getNews = async () => {
 export const getAttributeValues = async () => {
     try {
         const news = await selectOneForCompletion();
-        if(news !== null) {
+        if (news !== null) {
             const nullKeys = findNullKeys(news)
             // @ts-ignore
             for (const item of nullKeys) {
@@ -65,39 +62,53 @@ export const getAttributeValues = async () => {
                 switch (item) {
                     case "scale":
                         const scale = await determineScale(news.title)
-                        await updateByTitle(news.title, 'scale', scale)
+                        if (scale.length === 2) {
+                            await updateByTitle(news.title, 'scale', scale)
+                        }
                         break;
                     case "magnitude":
                         const magnitude = await determineMagnitude(news.title)
-                        await updateByTitle(news.title, 'magnitude', magnitude)
+                        if (magnitude.length === 1) {
+                            await updateByTitle(news.title, 'magnitude', magnitude)
+                        }
                         break;
                     case "potential":
                         const potential = await determinePotential(news.title)
-                        await updateByTitle(news.title, 'potential', potential)
+                        if(potential.length === 1) {
+                            await updateByTitle(news.title, 'potential', potential)
+                        }
                         break;
                     case "novelty":
                         const novelty = await determineNovelty(news.title)
-                        await updateByTitle(news.title, 'novelty', novelty)
+                        if(novelty.length === 1) {
+                            await updateByTitle(news.title, 'novelty', novelty)
+                        }
                         break;
                     case "significance":
                         const significance = await determineSignificance(news.title)
-                        await updateByTitle(news.title, 'significance', significance)
+                        if(significance.length === 1) {
+                            await updateByTitle(news.title, 'significance', significance)
+                        }
                         break;
                     case "actionability":
                         const actionability = await determineActionability(news.title)
-                        await updateByTitle(news.title, 'actionability', actionability)
+                        if(actionability.length === 1) {
+                            await updateByTitle(news.title, 'actionability', actionability)
+                        }
                         break;
                     case "longTerm":
                         const longTerm = await determineLongTermConsequences(news.title)
-                        await updateByTitle(news.title, 'longTerm', longTerm)
+                        if(longTerm.length === 1) {
+                            await updateByTitle(news.title, 'longTerm', longTerm)
+                        }
                         break;
                     case "category":
                         const category = await determineCategory(news.title)
-                        await updateByTitle(news.title, 'category', category)
+                        if(category !== 0) {
+                            await updateByTitle(news.title, 'category', category)
+                        }
                         break;
                     default:
-                        // Handle the default case (optional)
-                        console.log("Handling default case");
                         break;
                 }
             }
@@ -107,17 +118,13 @@ export const getAttributeValues = async () => {
     }
 
 
-
-
-
-
 }
 
 export const calculateScore = async () => {
     try {
         const news = await selectOneForCalculatingScore();
-        if(news !== null) {
-            const score =  calculateFinalScore(
+        if (news !== null) {
+            const score = calculateFinalScore(
                 news.scale,
                 news.magnitude,
                 news.potential,
