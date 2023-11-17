@@ -48,10 +48,6 @@ export const updateByTitle = async (title, updateColumn, updateValue) => {
     }
 }
 export const createAuthenticatedClient = async () => {
-    console.log(Deno.env.get('SUPABASE_API_KEY'))
-    console.log(Deno.env.get('SUPABASE_URL'))
-    console.log(Deno.env.get('SUPABASE_EMAIL'))
-    console.log(Deno.env.get('SUPABASE_PASS'))
     const kv = await Deno.openKv();
     const jwt = await kv.get(['SUPABASE_JWT_TOKEN'])
     if(jwt.value === null) {
@@ -84,10 +80,7 @@ export const createAuthenticatedClient = async () => {
     const {data, error} = await client
         .from('users')
         .select()
-    console.log(data)
-    console.log(error)
     if (data && data[0] && data[0].id === 1 && data[0].name === "Jack") {
-        console.log("HAS JWT")
         return createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
             global: {
                 headers: {
@@ -97,7 +90,6 @@ export const createAuthenticatedClient = async () => {
         })
     }
     if (error && error.code && error.code === 'PGRST301' && error.message === "JWT expired") {
-        console.log("NO JWT")
         await kv.delete(['SUPABASE_JWT_TOKEN'])
         const client = await createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'))
         const {data, error} = await client.auth.signInWithPassword({
@@ -138,23 +130,20 @@ export const selectOneForCompletion = async () => {
 }
 export const selectOneForCalculatingScore = async () => {
     const client = await createAuthenticatedClient()
-    console.log('created client')
     const { data, error } = await client
         .from('niuz')
         .select('*')
-        .is('score', "NULL")
-        .filter('scale', 'not', null)
-        .filter('magnitude', 'not', null)
-        .filter('potential', 'not', null)
-        .filter('novelty', 'not', null)
-        .filter('significance', 'not', null)
-        .filter('actionability', 'not', null)
-        .filter('longTerm', 'not', null)
-        .filter('category', 'not', null)
+        .is('score', null)
+        .not('scale', 'is', null)
+        .not('magnitude', 'is', null)
+        .not('potential', 'is', null)
+        .not('novelty', 'is', null)
+        .not('significance', 'is', null)
+        .not('actionability', 'is', null)
+        .not('longTerm', 'is', null)
+        .not('category', 'is', null)
         .limit(1)
         .single();
-    console.log(data)
-    console.log(error)
     if (error && error.code !== 'PGRST116') {
         Logger.error(error.message)
         throw new Error(error.message)
