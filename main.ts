@@ -5,10 +5,10 @@ import {calculateScore, getAttributeValues, getNews, test} from "./src/crons/cro
 
 const app = new Hono()
 
-Deno.cron("Fetch news", "0 */2 * * *", () => {
-    console.log("Getting the news");
-    getNews()
-});
+// Deno.cron("Fetch news", "0 */2 * * *", () => {
+//     console.log("Getting the news");
+//     getNews()
+// });
 Deno.cron("Get attributes", "* * * * *", () => {
     console.log('Getting the attributes for news')
     getAttributeValues()
