@@ -49,7 +49,6 @@ export const updateByTitle = async (title, updateColumn, updateValue) => {
 export const createAuthenticatedClient = async () => {
     const kv = await Deno.openKv();
     const jwt = await kv.get(['SUPABASE_JWT_TOKEN'])
-    console.log(jwt)
     if (jwt.value === null) {
         console.log('JWT IS NULL, authenticating')
         const client = await createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'))
@@ -116,6 +115,10 @@ export const createAuthenticatedClient = async () => {
         if (data && data[0] && data[0].id === 1 && data[0].name === "Jack") {
             return client
         }
+    }
+    if(jwt.value.token === undefined) {
+        console.log('UNDEFINED')
+        await kv.delete(['SUPABASE_JWT_TOKEN'])
     }
 }
 
