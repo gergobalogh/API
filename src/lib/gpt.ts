@@ -171,7 +171,7 @@ export const determineCategory = async (message: string) => {
         messages: [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. In ce categorie se  încadrează titlul: \n 1 business, 2 sănătate, 3 tehnologie, 4 sport, 5 divertisment, 6 economie, 7 națiune. Răspunde DOAR cu numărul categoriei."
+                "content": "Ești un redactor șef de știri. In ce categorie se  încadrează titlul: \n 1: business, 2: sănătate, 3: tehnologie, 4: sport, 5: divertisment, 6: economie, 7: națiune. Răspunde DOAR cu numărul categoriei."
             },
             {
                 "role": "user",
