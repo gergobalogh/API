@@ -167,7 +167,9 @@ export const translateDate = async (message: string) => {
 }
 export const determineCategory = async (message: string) => {
     const result = await callOpenAIAPI({
-        ...defaultGPT,
+        model: 'gpt-3.5-turbo-1106',
+        temperature: 0,
+        max_tokens: 1,
         messages: [
             {
                 "role": "system",
@@ -179,8 +181,8 @@ export const determineCategory = async (message: string) => {
             }
         ]
     })
-    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
-        return JSON.parse(result.choices[0].message.content)
+    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
+        return Number(result.choices[0].message.content)
     } else {
         return ''
     }
