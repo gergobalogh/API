@@ -116,10 +116,6 @@ export const createAuthenticatedClient = async () => {
             return client
         }
     }
-    if(jwt.value.token === undefined) {
-        console.log('UNDEFINED')
-        await kv.delete(['SUPABASE_JWT_TOKEN'])
-    }
 }
 
 
