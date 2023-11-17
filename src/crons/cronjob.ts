@@ -16,6 +16,7 @@ import {
     translateDate
 } from "../lib/gpt.ts";
 import {Logger} from "../lib/logging/logger.ts";
+import * as cheerio from "cheerio";
 
 
 export const getNews = async () => {
