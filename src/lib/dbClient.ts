@@ -2,7 +2,6 @@ import {createClient} from "supabase"
 import {Logger} from './logging/logger.ts'
 
 
-
 export const insertNews = async (title: string, url: string, proximity: string) => {
     const client = await createAuthenticatedClient()
     const {data, error} = await client
@@ -50,7 +49,8 @@ export const updateByTitle = async (title, updateColumn, updateValue) => {
 export const createAuthenticatedClient = async () => {
     const kv = await Deno.openKv();
     const jwt = await kv.get(['SUPABASE_JWT_TOKEN'])
-    if(jwt.value === null) {
+    if (jwt.value === null) {
+        console.log('JWT IS NULL, authenticating')
         const client = await createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'))
         const {data, error} = await client.auth.signInWithPassword({
             email: Deno.env.get('SUPABASE_EMAIL'),
@@ -60,7 +60,11 @@ export const createAuthenticatedClient = async () => {
             Logger.error(error.message)
             throw new Error(error.message)
         }
-        await kv.set(['SUPABASE_JWT_TOKEN'], data.session.access_token)
+        await kv.set(['SUPABASE_JWT_TOKEN'], {
+            token: data.session.access_token,
+            expires_at: data.session.expires_at,
+            refresh_token: data.session.refresh_token
+        })
         return createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
             global: {
                 headers: {
@@ -69,49 +73,50 @@ export const createAuthenticatedClient = async () => {
             }
         })
     }
-    let token;
-    const client = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
-        global: {
-            headers: {
-                'Authorization': 'Bearer ' + jwt.value
-            }
-        }
-    })
-    const {data, error} = await client
-        .from('users')
-        .select()
-    if (data && data[0] && data[0].id === 1 && data[0].name === "Jack") {
-        return createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
-            global: {
-                headers: {
-                    'Authorization': 'Bearer ' + jwt.value
-                }
-            }
-        })
-    }
-    if (error && error.code && error.code === 'PGRST301' && error.message === "JWT expired") {
-        await kv.delete(['SUPABASE_JWT_TOKEN'])
-        const client = await createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'))
-        const {data, error} = await client.auth.signInWithPassword({
-            email: Deno.env.get('SUPABASE_EMAIL'),
-            password: Deno.env.get('SUPABASE_PASS')
+    if(jwt.value.expires_at < Math.floor(Date.now() / 1000)) {
+        console.log('JWT EXPIRED, TRYING TO REFRESH SESSION')
+        const { data, error } = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY')).auth.setSession({
+            access_token: jwt.value.access_token,
+            refresh_token: jwt.value.refresh_token,
         })
         if (error && error.message) {
             Logger.error(error.message)
             throw new Error(error.message)
         }
-        await kv.set(['SUPABASE_JWT_TOKEN'], data.session.access_token)
-        token = data.session.access_token
+        await kv.delete(['SUPABASE_JWT_TOKEN'])
+        await kv.set(['SUPABASE_JWT_TOKEN'], {
+            token: data.session.access_token,
+            expires_at: data.session.expires_at,
+            refresh_token: data.session.refresh_token
+        })
         return createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
             global: {
                 headers: {
-                    'Authorization': 'Bearer ' + token
+                    'Authorization': 'Bearer ' + data.session.access_token
                 }
             }
         })
     }
+    if(jwt.value.token) {
+        const client = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
+            global: {
+                headers: {
+                    'Authorization': 'Bearer ' + jwt.value.token
+                }
+            }
+        })
+        const {data, error} = await client
+            .from('users')
+            .select()
+        if (error && error.message) {
+            Logger.error(error.message)
+            throw new Error(error.message)
+        }
+        if (data && data[0] && data[0].id === 1 && data[0].name === "Jack") {
+            return client
+        }
+    }
 }
-
 
 
 export const selectOneForCompletion = async () => {
@@ -130,7 +135,7 @@ export const selectOneForCompletion = async () => {
 }
 export const selectOneForCalculatingScore = async () => {
     const client = await createAuthenticatedClient()
-    const { data, error } = await client
+    const {data, error} = await client
         .from('niuz')
         .select('*')
         .is('score', null)

@@ -1,4 +1,5 @@
 import {
+    createAuthenticatedClient,
     insertNews,
     selectByTitle,
     selectOneForCalculatingScore,
@@ -18,6 +19,9 @@ import {
 import {Logger} from "../lib/logging/logger.ts";
 import * as cheerio from "cheerio";
 
+export const test = async () => {
+    await calculateScore()
+}
 
 export const getNews = async () => {
     try {
@@ -48,7 +52,6 @@ export const getNews = async () => {
         console.log(err.message)
         Logger.error(err.message)
     }
-
 }
 
 export const getAttributeValues = async () => {
