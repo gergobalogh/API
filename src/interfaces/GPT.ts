@@ -12,5 +12,5 @@ export const defaultGPT: GPT = {
     model: 'gpt-3.5-turbo-1106',
     temperature: 0,
     messages: [],
-    max_tokens: 1
+    max_tokens: 10
 }
