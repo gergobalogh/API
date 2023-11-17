@@ -49,6 +49,7 @@ export const updateByTitle = async (title, updateColumn, updateValue) => {
 export const createAuthenticatedClient = async () => {
     const kv = await Deno.openKv();
     const jwt = await kv.get(['SUPABASE_JWT_TOKEN'])
+    console.log(jwt)
     if (jwt.value === null) {
         console.log('JWT IS NULL, authenticating')
         const client = await createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'))
