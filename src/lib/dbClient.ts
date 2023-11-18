@@ -83,6 +83,8 @@ export const createAuthenticatedClient = async () => {
             Logger.error(error.message)
             throw new Error(error.message)
         }
+        console.log(data)
+        console.log(error)
         await kv.delete(['SUPABASE_JWT_TOKEN'])
         await kv.set(['SUPABASE_JWT_TOKEN'], {
             token: data.session.access_token,
@@ -119,14 +121,13 @@ export const createAuthenticatedClient = async () => {
 }
 
 
-export const selectOneForCompletion = async () => {
+export const selectTwoforCompletion = async () => {
     const client = await createAuthenticatedClient()
     const {data, error} = await client
         .from('niuz')
         .select('*')
         .or('scale.is.null,magnitude.is.null,potential.is.null,novelty.is.null,significance.is.null,actionability.is.null,longTerm.is.null,score.is.null,category.is.null')
-        .limit(1)
-        .single()
+        .limit(2)
     if (error && error.code !== 'PGRST116') {
         Logger.error(error.message)
         throw new Error(error.message)

@@ -13,7 +13,6 @@ const callOpenAIAPI = async (gptParams: GPT) => {
         temperature: gptParams.temperature,
         max_tokens: gptParams.max_tokens
     })
-    console.log(result)
     return result;
 }
 

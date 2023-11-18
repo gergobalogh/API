@@ -50,7 +50,7 @@
   "imports": {
     "hono": "https://deno.land/x/hono@v3.4.1/mod.ts",
     "mariadb": "https://deno.land/x/mysql/mod.ts",
-    "openai": "https://deno.land/x/openai/mod.ts",
+    "openai": "https://deno.land/x/openai@v4.16.1/mod.ts",
     "cors": "https://deno.land/x/hono@v3.4.1/middleware.ts",
     "zod": "https://deno.land/x/zod/mod.ts",
     "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
