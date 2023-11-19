@@ -59,7 +59,6 @@ export const getAttributeValues = async () => {
             news.forEach(async (item) => {
                 await sleep(1000)
                 const nullKeys = findNullKeys(item)
-                console.log(nullKeys)
                 // @ts-ignore
                 for (const missingAttribute of nullKeys) {
                     await sleep(1000)

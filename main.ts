@@ -16,7 +16,7 @@ Deno.cron("Calculate score", "*/2 * * * *", () => {
     calculateScore()
 })
 app.use('/*', cors({
-    origin: 'http://127.0.0.1:5173/',
+    origin: 'http://127.0.0.1:5173',
     allowMethods: ['POST', 'GET', 'OPTIONS'],
 }))
 app.route('/news', News)
