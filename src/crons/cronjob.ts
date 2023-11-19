@@ -57,7 +57,11 @@ export const getAttributeValues = async () => {
         if (Array.isArray(news)) {
             // @ts-ignore
             news.forEach(async (item) => {
+                await sleep(1000)
                 const nullKeys = findNullKeys(item)
+                Logger.info('Getting Attributes for title:')
+                Logger.info(item.title)
+                console.log(nullKeys)
                 // @ts-ignore
                 for (const missingAttribute of nullKeys) {
 
@@ -65,49 +69,56 @@ export const getAttributeValues = async () => {
                     switch (missingAttribute) {
                         case "scale":
                             const scale = await determineScale(item.title)
-                            if (scale.length === 1) {
+                            Logger.info('Calculated scale: ' + scale)
+                            if (typeof scale === "number") {
                                 await updateByTitle(item.title, 'scale', scale)
                             }
                             break;
                         case "magnitude":
                             const magnitude = await determineMagnitude(item.title)
-                            if (magnitude.length === 1) {
+                            Logger.info('Calculated magnitude: ' + magnitude)
+                            if (typeof magnitude === "number") {
                                 await updateByTitle(item.title, 'magnitude', magnitude)
                             }
                             break;
                         case "potential":
                             const potential = await determinePotential(item.title)
-                            if (potential.length === 1) {
+                            Logger.info('Calculated potential: ' + potential)
+                            if (typeof potential ===  "number") {
                                 await updateByTitle(item.title, 'potential', potential)
                             }
                             break;
                         case "novelty":
                             const novelty = await determineNovelty(item.title)
-                            if (novelty.length === 1) {
+                            Logger.info('Calculated novelty: ' + novelty)
+                            if (typeof novelty === "number") {
                                 await updateByTitle(item.title, 'novelty', novelty)
                             }
                             break;
                         case "significance":
                             const significance = await determineSignificance(item.title)
-                            if (significance.length === 1) {
+                            if (typeof significance === "number") {
                                 await updateByTitle(item.title, 'significance', significance)
                             }
                             break;
                         case "actionability":
                             const actionability = await determineActionability(item.title)
-                            if (actionability.length === 1) {
+                            Logger.info('Calculated actionability: ' + actionability)
+                            if (typeof actionability === "number") {
                                 await updateByTitle(item.title, 'actionability', actionability)
                             }
                             break;
                         case "longTerm":
                             const longTerm = await determineLongTermConsequences(item.title)
-                            if (longTerm.length === 1) {
+                            Logger.info('Calculated longTerm: ' + longTerm)
+                            if (typeof longTerm === "number") {
                                 await updateByTitle(item.title, 'longTerm', longTerm)
                             }
                             break;
                         case "category":
                             const category = await determineCategory(item.title)
-                            if (category !== 0) {
+                            Logger.info('Calculated category: ' + category)
+                            if (typeof category === "number") {
                                 await updateByTitle(item.title, 'category', category)
                             }
                             break;
@@ -140,6 +151,8 @@ export const calculateScore = async () => {
                 news.actionability,
                 news.longTerm,
             )
+            Logger.info(news.title)
+            Logger.info('Calculated score: ' + score)
             await updateByTitle(news.title, 'score', score)
         }
     } catch (err) {

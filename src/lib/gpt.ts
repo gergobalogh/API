@@ -13,6 +13,14 @@ const callOpenAIAPI = async (gptParams: GPT) => {
         temperature: gptParams.temperature,
         max_tokens: gptParams.max_tokens
     })
+    if(result.choices[0].message.content.length > 1) {
+        gptParams.messages.forEach((item) => {
+            if(item.role === 'system') {
+                Logger.error(item.content)
+            }
+        })
+        Logger.error(result.choices[0].message.content)
+    }
     return result;
 }
 
@@ -27,9 +35,10 @@ export const determineScale = async (message: string) => {
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
+        Logger.error(result.choices[0].message.content)
         return ''
     }
 }
@@ -45,9 +54,10 @@ export const determineMagnitude = async (message: string) => {
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
+        Logger.error(result.choices[0].message.content)
         return ''
     }
 }
@@ -63,9 +73,10 @@ export const determinePotential = async (message: string) => {
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
+        Logger.error(result.choices[0].message.content)
         return ''
     }
 }
@@ -77,14 +88,15 @@ export const determineNovelty = async (message: string) => {
         messages:  [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă un eveniment total previzibil și 10 înseamnă un eveniment complet neașteptat sau unic în contextul său. Răspunde cu un număr."
+                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă un eveniment total previzibil și 10 înseamnă un eveniment complet neașteptat sau unic în contextul său. Nu eticheta scorul, doar dă-mi numărul."
             },
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
+        Logger.error(result.choices[0].message.content)
         return ''
     }
 }
@@ -96,14 +108,16 @@ export const determineSignificance = async (message: string) => {
         messages:  [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă că evenimentul are un impact minim asupra umanității și 10 înseamnă că are un impact maxim, afectând semnificativ comunitățile și societatea în ansamblu. Răspunde cu un număr."
+                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă că evenimentul are un impact minim asupra umanității și 10 înseamnă că are un impact maxim, afectând semnificativ comunitățile și societatea în ansamblu.\n" +
+                    "Nu etichetați scorul, doar dați-mi numărul."
             },
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
+        Logger.error(result.choices[0].message.content)
         return ''
     }
 }
@@ -115,12 +129,12 @@ export const determineActionability = async (message: string) => {
         messages:  [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10 evaluează capacitatea de acționare a cititorului, unde 0 înseamnă că evenimentul oferă puține sau niciun fel de posibilități de acțiune pentru cititori, iar 10 înseamnă că evenimentul oferă oportunități semnificative pentru cititori să acționeze în beneficiul personal sau comunitar. Răspunde cu un număr."
+                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10 evaluează capacitatea de acționare a cititorului, unde 0 înseamnă că evenimentul oferă puține sau niciun fel de posibilități de acțiune pentru cititori, iar 10 înseamnă că evenimentul oferă oportunități semnificative pentru cititori să acționeze în beneficiul personal sau comunitar. Nu eticheta scorul, doar dă-mi numărul."
             },
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
         return ''
@@ -140,9 +154,10 @@ export const determineLongTermConsequences = async (message: string) => {
         ]
     })
 
-    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
         return JSON.parse(result.choices[0].message.content)
     } else {
+        Logger.error(result.choices[0].message.content)
         return ''
     }
 }
@@ -163,6 +178,7 @@ export const translateDate = async (message: string) => {
     if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
         return result.choices[0].message.content
     } else {
+        Logger.error(result.choices[0].message.content)
         return ''
     }
 }
@@ -183,8 +199,9 @@ export const determineCategory = async (message: string) => {
         ]
     })
     if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
-        return Number(result.choices[0].message.content)
+        return JSON.parse(result.choices[0].message.content)
     } else {
+        Logger.error(result.choices[0].message.content)
         return 0
     }
 }

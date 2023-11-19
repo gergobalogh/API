@@ -9,12 +9,12 @@ const app = new Hono()
 //     console.log("Getting the news");
 //     getNews()
 // });
-Deno.cron("Get attributes", "* * * * *", () => {
-    getAttributeValues()
-})
-Deno.cron("Calculate score", "*/2 * * * *", () => {
-    calculateScore()
-})
+// Deno.cron("Get attributes", "* * * * *", () => {
+//     getAttributeValues()
+// })
+// Deno.cron("Calculate score", "*/2 * * * *", () => {
+//     calculateScore()
+// })
 getAttributeValues()
 app.use('/*', cors({
     origin: 'http://127.0.0.1:5173/',
