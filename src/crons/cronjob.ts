@@ -59,38 +59,31 @@ export const getAttributeValues = async () => {
             news.forEach(async (item) => {
                 await sleep(1000)
                 const nullKeys = findNullKeys(item)
-                Logger.info('Getting Attributes for title:')
-                Logger.info(item.title)
                 console.log(nullKeys)
                 // @ts-ignore
                 for (const missingAttribute of nullKeys) {
-
                     await sleep(1000)
                     switch (missingAttribute) {
                         case "scale":
                             const scale = await determineScale(item.title)
-                            Logger.info('Calculated scale: ' + scale)
                             if (typeof scale === "number") {
                                 await updateByTitle(item.title, 'scale', scale)
                             }
                             break;
                         case "magnitude":
                             const magnitude = await determineMagnitude(item.title)
-                            Logger.info('Calculated magnitude: ' + magnitude)
                             if (typeof magnitude === "number") {
                                 await updateByTitle(item.title, 'magnitude', magnitude)
                             }
                             break;
                         case "potential":
                             const potential = await determinePotential(item.title)
-                            Logger.info('Calculated potential: ' + potential)
                             if (typeof potential ===  "number") {
                                 await updateByTitle(item.title, 'potential', potential)
                             }
                             break;
                         case "novelty":
                             const novelty = await determineNovelty(item.title)
-                            Logger.info('Calculated novelty: ' + novelty)
                             if (typeof novelty === "number") {
                                 await updateByTitle(item.title, 'novelty', novelty)
                             }
@@ -103,25 +96,24 @@ export const getAttributeValues = async () => {
                             break;
                         case "actionability":
                             const actionability = await determineActionability(item.title)
-                            Logger.info('Calculated actionability: ' + actionability)
                             if (typeof actionability === "number") {
                                 await updateByTitle(item.title, 'actionability', actionability)
                             }
                             break;
                         case "longTerm":
                             const longTerm = await determineLongTermConsequences(item.title)
-                            Logger.info('Calculated longTerm: ' + longTerm)
                             if (typeof longTerm === "number") {
                                 await updateByTitle(item.title, 'longTerm', longTerm)
                             }
                             break;
                         case "category":
                             const category = await determineCategory(item.title)
-                            Logger.info('Calculated category: ' + category)
                             if (typeof category === "number") {
                                 await updateByTitle(item.title, 'category', category)
                             }
                             break;
+                        case "score":
+                            break
                         default:
                             break;
                     }

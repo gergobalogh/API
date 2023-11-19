@@ -1,27 +1,17 @@
 // @ts-ignore
 import {OpenAI} from "openai"
 import {Logger} from "./logging/logger.ts";
-import {defaultGPT} from "../interfaces/GPT.ts";
-import {GPT} from "../interfaces/GPT.ts";
+import {defaultGPT, GPT} from "../interfaces/GPT.ts";
 
 const gptAPI = new OpenAI(Deno.env.get('OPENAI_API_KEY'))
 
 const callOpenAIAPI = async (gptParams: GPT) => {
-    const result = await gptAPI.chat.completions.create({
+    return await gptAPI.chat.completions.create({
         model: gptParams.model,
         messages: gptParams.messages,
         temperature: gptParams.temperature,
         max_tokens: gptParams.max_tokens
-    })
-    if(result.choices[0].message.content.length > 1) {
-        gptParams.messages.forEach((item) => {
-            if(item.role === 'system') {
-                Logger.error(item.content)
-            }
-        })
-        Logger.error(result.choices[0].message.content)
-    }
-    return result;
+    });
 }
 
 export const determineScale = async (message: string) => {
@@ -35,8 +25,8 @@ export const determineScale = async (message: string) => {
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
-        return JSON.parse(result.choices[0].message.content)
+    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+        return parseResponse(result.choices[0].message.content)
     } else {
         Logger.error(result.choices[0].message.content)
         return ''
@@ -49,13 +39,13 @@ export const determineMagnitude = async (message: string) => {
         messages:  [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10, unde 0 înseamnă un eveniment neînsemnat, iar 10 înseamnă un eveniment de o importanță extraordinară sau extrem de grav. Răspunde cu un număr."
+                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10, unde 0 înseamnă un eveniment neînsemnat, iar 10 înseamnă un eveniment de o importanță extraordinară sau extrem de grav.  Răspunde în format JSON cu nota."
             },
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
-        return JSON.parse(result.choices[0].message.content)
+    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+        return parseResponse(result.choices[0].message.content)
     } else {
         Logger.error(result.choices[0].message.content)
         return ''
@@ -68,13 +58,13 @@ export const determinePotential = async (message: string) => {
         messages:  [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă foarte puțin potențial de a provoca evenimente mai mari și 10 înseamnă un potențial extrem de mare de a avea consecințe semnificative și de a genera evenimente ulterioare importante. Răspunde cu un număr."
+                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă foarte puțin potențial de a provoca evenimente mai mari și 10 înseamnă un potențial extrem de mare de a avea consecințe semnificative și de a genera evenimente ulterioare importante.  Răspunde în format JSON cu nota."
             },
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
-        return JSON.parse(result.choices[0].message.content)
+    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+        return parseResponse(result.choices[0].message.content)
     } else {
         Logger.error(result.choices[0].message.content)
         return ''
@@ -88,13 +78,13 @@ export const determineNovelty = async (message: string) => {
         messages:  [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă un eveniment total previzibil și 10 înseamnă un eveniment complet neașteptat sau unic în contextul său. Nu eticheta scorul, doar dă-mi numărul."
+                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă un eveniment total previzibil și 10 înseamnă un eveniment complet neașteptat sau unic în contextul său.  Răspunde în format JSON cu nota."
             },
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
-        return JSON.parse(result.choices[0].message.content)
+    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+        return parseResponse(result.choices[0].message.content)
     } else {
         Logger.error(result.choices[0].message.content)
         return ''
@@ -108,14 +98,13 @@ export const determineSignificance = async (message: string) => {
         messages:  [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă că evenimentul are un impact minim asupra umanității și 10 înseamnă că are un impact maxim, afectând semnificativ comunitățile și societatea în ansamblu.\n" +
-                    "Nu etichetați scorul, doar dați-mi numărul."
+                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10,  unde 0 înseamnă că evenimentul are un impact minim asupra umanității și 10 înseamnă că are un impact maxim, afectând semnificativ comunitățile și societatea în ansamblu.  Răspunde în format JSON cu nota.."
             },
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
-        return JSON.parse(result.choices[0].message.content)
+    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+        return parseResponse(result.choices[0].message.content)
     } else {
         Logger.error(result.choices[0].message.content)
         return ''
@@ -129,13 +118,13 @@ export const determineActionability = async (message: string) => {
         messages:  [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10 evaluează capacitatea de acționare a cititorului, unde 0 înseamnă că evenimentul oferă puține sau niciun fel de posibilități de acțiune pentru cititori, iar 10 înseamnă că evenimentul oferă oportunități semnificative pentru cititori să acționeze în beneficiul personal sau comunitar. Nu eticheta scorul, doar dă-mi numărul."
+                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10 evaluează capacitatea de acționare a cititorului, unde 0 înseamnă că evenimentul oferă puține sau niciun fel de posibilități de acțiune pentru cititori, iar 10 înseamnă că evenimentul oferă oportunități semnificative pentru cititori să acționeze în beneficiul personal sau comunitar. Răspunde în format JSON cu nota."
             },
             {"role": "user", "content": message},
         ]
     })
-    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
-        return JSON.parse(result.choices[0].message.content)
+    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+        return parseResponse(result.choices[0].message.content)
     } else {
         return ''
     }
@@ -148,14 +137,14 @@ export const determineLongTermConsequences = async (message: string) => {
         messages:  [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10, unde 0 înseamnă consecințe minime sau deloc semnificative, iar 10 înseamnă consecințe majore cu impact semnificativ asupra legislației, politicii sau societății în general.  Răspunde cu un număr."
+                "content": "Ești un redactor șef de știri. Notează evenimentul prezentat în titlul de știre pe o scară de la 0 la 10, unde 0 înseamnă consecințe minime sau deloc semnificative, iar 10 înseamnă consecințe majore cu impact semnificativ asupra legislației, politicii sau societății în general.   Răspunde în format JSON cu nota."
             },
             {"role": "user", "content": message},
         ]
     })
 
-    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
-        return JSON.parse(result.choices[0].message.content)
+    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+        return parseResponse(result.choices[0].message.content)
     } else {
         Logger.error(result.choices[0].message.content)
         return ''
@@ -186,11 +175,10 @@ export const determineCategory = async (message: string) => {
     const result = await callOpenAIAPI({
         model: 'gpt-3.5-turbo-1106',
         temperature: 0,
-        max_tokens: 1,
         messages: [
             {
                 "role": "system",
-                "content": "Ești un redactor șef de știri. In ce categorie se  încadrează titlul: \n 1: business, 2: sănătate, 3: tehnologie, 4: sport, 5: divertisment, 6: economie, 7: națiune. Răspunde DOAR cu numărul categoriei."
+                "content": "Ești un redactor șef de știri. In ce categorie se  încadrează titlul: \n 1: business, 2: sănătate, 3: tehnologie, 4: sport, 5: divertisment, 6: economie, 7: națiune. Răspunde în format JSON."
             },
             {
                 "role": "user",
@@ -198,10 +186,34 @@ export const determineCategory = async (message: string) => {
             }
         ]
     })
-    if (result.choices[0].finish_reason === 'length' && result.choices[0].message.content) {
-        return JSON.parse(result.choices[0].message.content)
+    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
+        return parseResponse(result.choices[0].message.content)
     } else {
         Logger.error(result.choices[0].message.content)
-        return 0
+        return ''
+    }
+}
+
+function parseResponse(result) {
+    try {
+        const attribute = JSON.parse(result)
+        if (typeof attribute === "object") {
+            const score = Object.values(attribute)
+            if (Array.isArray(score) && score.length === 1) {
+                return score[0]
+            }
+            if(Array.isArray(score) && score.length > 1) {
+                score.forEach((item, index) => {
+                    Logger.error("More than one key-value pair received from OPENAI API")
+                    Logger.error(item)
+                    console.error(result)
+                    if(typeof item === 'number') {
+                        return score[index]
+                    }
+                })
+            }
+        }
+    } catch (err) {
+        console.log(err)
     }
 }

@@ -100,7 +100,8 @@ export const selectTwoforCompletion = async () => {
     const {data, error} = await client
         .from('niuz')
         .select('*')
-        .or('scale.is.null,magnitude.is.null,potential.is.null,novelty.is.null,significance.is.null,actionability.is.null,longTerm.is.null,score.is.null,category.is.null')
+        .is('score', null)
+        .or('scale.is.null,magnitude.is.null,potential.is.null,novelty.is.null,significance.is.null,actionability.is.null,longTerm.is.null,category.is.null')
         .limit(2)
     if (error && error.code !== 'PGRST116') {
         Logger.error(error.message)
