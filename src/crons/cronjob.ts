@@ -26,7 +26,7 @@ export const getG4News = async () => {
         const html = await news.text()
         const $ = cheerio.load(html)
         $('.post-review').each(async (index, element) => {
-            if (index < 10) {
+            if (index < 100) {
                 const title = $(element).find('.post-title a').text().trim();
                 const href = $(element).find('.post-title a').attr('href');
                 const date = $(element).find('.entry-date').text().trim()
@@ -192,7 +192,7 @@ export const deduplicateTitles = async () => {
             }
             const insert = await insertVector(titleEmbeddings)
             await updateProcessed(news.id, insert.data.insertIds[0])
-        }
+       }
     } catch (err) {
         console.log(err)
     }

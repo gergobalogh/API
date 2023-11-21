@@ -242,28 +242,7 @@ export const rewriteTitle = async (message: string) => {
         return ''
     }
 }
-export const extractKeywords = async (message: string) => {
-    const result = await callOpenAIAPI({
-        ...defaultGPT,
-        max_tokens: 250,
-        messages: [
-            {
-                "role": "system",
-                "content": "Ești un redactor șef de știri. Extrage 5 cuvinte cheie pentru a descrie acest titlu. Răspunde DOAR cu cuvintele extrase."
-            },
-            {
-                "role": "user",
-                "content": message
-            }
-        ]
-    })
-    if (result.choices[0].finish_reason === 'stop' && result.choices[0].message.content) {
-        return result.choices[0].message.content
-    } else {
-        Logger.error(result.choices[0].message.content)
-        return ''
-    }
-}
+
 export const generateEmbeddings = async (title: string) => {
     const result = await gptAPI.embeddings.create({
         model: "text-embedding-ada-002",

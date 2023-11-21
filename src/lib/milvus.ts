@@ -5,7 +5,7 @@ export const insertVector = async (embeddings: any) => {
         method: 'POST',
         headers: {Authorization: 'Bearer ' + Deno.env.get('MILVUS_API_KEY'), Accept: 'application/json'},
         body: JSON.stringify({
-            "collectionName": "NiuzCollection",
+            "collectionName": "NiuzTestCollection",
             data: [{
                 "vector": embeddings,
             }]
@@ -27,13 +27,14 @@ export const searchVector = async (embeddings: any) => {
         method: 'POST',
         headers: {Authorization: 'Bearer ' + Deno.env.get('MILVUS_API_KEY'), Accept: 'application/json', 'Content-type': 'application/json'},
         body: JSON.stringify({
-            'collectionName': 'NiuzCollection',
+            'collectionName': 'NiuzTestCollection',
             vector: embeddings
         })
     };
     try {
     const response = await fetch(url, options);
     const data = await response.json()
+    console.log(data)
         if (data.code === 200 && data.data.length === 0) {
             return false
         } else {

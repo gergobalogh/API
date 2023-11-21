@@ -9,17 +9,17 @@ import {
 } from "./src/crons/cronjob.ts";
 const app = new Hono()
 
-Deno.cron("Fetch news", "0 */2 * * *", () => {
-    console.log("Getting the news");
-    getG4News()
-    getBizidayNews()
-});
-Deno.cron("Get attributes", "* * * * *", () => {
-    getAttributeValues()
-})
-Deno.cron("Calculate score", "*/2 * * * *", () => {
-    calculateScore()
-})
+// Deno.cron("Fetch news", "0 */2 * * *", () => {
+//     console.log("Getting the news");
+//     getG4News()
+//     getBizidayNews()
+// });
+// Deno.cron("Get attributes", "* * * * *", () => {
+//     getAttributeValues()
+// })
+// Deno.cron("Calculate score", "*/2 * * * *", () => {
+//     calculateScore()
+// })
 // Deno.cron("Deduplicate titles", "*/5 * * * *", () => {
 //     deduplicateTitles()
 // })

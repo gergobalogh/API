@@ -69,9 +69,8 @@ function calculateTimeDifference(targetDate: string) {
         proximity,
     };
 }
-export async function sleep(ms) {
-    // @ts-ignore
-    await new Promise(r => setTimeout(r, ms));
+export async function sleep(ms: number ) {
+    await new Promise((r: TimerHandler) => setTimeout(r, ms));
 }
 function isEmpty(obj: object): boolean {
     for (const prop in obj) {
