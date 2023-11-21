@@ -93,8 +93,23 @@ function findNullKeys(obj: { [key: string]: any }): string[] {
 
     return nullKeys;
 }
-
+function createLogitBias(): Record<string, number> {
+    const logitBias: Record<string, number> = {};
+    logitBias['15'] = 100;
+    logitBias['16'] = 100;
+    logitBias['17'] = 100;
+    logitBias['18'] = 100;
+    logitBias['19'] = 100;
+    logitBias['20'] = 100;
+    logitBias['21'] = 100;
+    logitBias['22'] = 100;
+    logitBias['23'] = 100;
+    logitBias['24'] = 100;
+    logitBias['605'] = 100;
+    return logitBias;
+}
 export {
+    createLogitBias,
     findNullKeys,
     isEmpty,
     calculateTimeDifference,

@@ -45,7 +45,7 @@
     ]
   },
   "tasks": {
-    "start": "deno run --unstable --allow-env --allow-net --allow-read --allow-write main.ts"
+    "start": "deno run --unstable --allow-env --allow-net --allow-read --allow-write  --allow-sys main.ts"
   },
   "imports": {
     "hono": "https://deno.land/x/hono@v3.4.1/mod.ts",
@@ -56,6 +56,6 @@
     "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
     "supabase": "https://esm.sh/@supabase/supabase-js",
     "moment": "https://deno.land/x/momentjs@2.29.1-deno/mod.ts",
-    "houston": "https://deno.land/x/houston@1.0.0/mod.ts"
+    "houston": "https://deno.land/x/houston@1.0.0/mod.ts",
 }
 }

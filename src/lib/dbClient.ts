@@ -2,28 +2,55 @@ import {createClient} from "supabase"
 import {Logger} from './logging/logger.ts'
 
 
-export const insertNews = async (title: string, url: string, proximity: string) => {
+export const insertNewsWithDuplicates = async (title: string, url: string, proximity: string, site: string) => {
     const client = await createAuthenticatedClient()
     const {data, error} = await client
-        .from('niuz')
+        .from('niuz_with_duplicates')
         .insert({
             title: title,
             url: url,
-            proximity: proximity
+            proximity: proximity,
+            site: site
         })
         .select()
+    if (data[0]['title'] === title) {
+        Logger.info('Inserted into niuz_with_duplicates title ' + title)
+    } else {
+        Logger.error('Data was not inserted for title ' + title)
+    }
     if (error && error.message) {
         Logger.error(error.message)
         throw new Error(error.message)
     }
 }
-
-export const selectByTitle = async (title: string) => {
+export const insertNiuz = async (title: string, url: string, proximity: string, site: string) => {
     const client = await createAuthenticatedClient()
     const {data, error} = await client
         .from('niuz')
+        .insert({
+            original_title: title,
+            url: url,
+            proximity: proximity,
+            site: site
+        })
+        .select()
+    if (data[0]['original_title'] === title) {
+        Logger.info('Inserted into niuz title ' + title)
+    } else {
+        Logger.error('Data was not inserted for title ' + title)
+    }
+    if (error && error.message) {
+        Logger.error(error.message)
+        throw new Error(error.message)
+    }
+}
+export const selectByTitle = async (title: string, site: string) => {
+    const client = await createAuthenticatedClient()
+    const {data, error} = await client
+        .from('niuz_with_duplicates')
         .select('title')
         .eq('title', title)
+        .eq('site', site)
 
     if (error && error.message) {
         Logger.error(error.message)
@@ -31,7 +58,7 @@ export const selectByTitle = async (title: string) => {
     }
     return data;
 }
-export const updateByTitle = async (title, updateColumn, updateValue) => {
+export const updateById = async (id: number, updateColumn, updateValue) => {
     const client = await createAuthenticatedClient()
     const updatePayload = {
         [updateColumn]: updateValue,
@@ -39,8 +66,33 @@ export const updateByTitle = async (title, updateColumn, updateValue) => {
     const {data, error} = await client
         .from('niuz')
         .update(updatePayload)
-        .eq('title', title)
+        .eq('id', id)
         .select()
+
+    if (data[0][updateColumn] === updateValue) {
+        Logger.info('Updated ' + updateColumn + ' with value: ' + updateValue)
+    } else {
+        Logger.error('Data was not updated for id ' + id)
+    }
+    if (error && error.message) {
+        Logger.error(error.message)
+        throw new Error(error.message)
+    }
+}
+export const updateProcessed = async (id: number, vector_db_id: number) => {
+    console.log(vector_db_id)
+    const client = await createAuthenticatedClient()
+    const {data, error} = await client
+        .from('niuz_with_duplicates')
+        .update({
+            processed: 1,
+            vector_db_id: vector_db_id
+        })
+        .eq('id', id)
+        .select()
+    if(data[0].id === id && data[0].vector_db_id === vector_db_id) {
+        Logger.info("Processed id: " + id)
+    }
     if (error && error.message) {
         Logger.error(error.message)
         throw new Error(error.message)
@@ -73,7 +125,7 @@ export const createAuthenticatedClient = async () => {
             }
         })
     }
-    if(jwt.value.token) {
+    if (jwt.value.token) {
         const client = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_API_KEY'), {
             global: {
                 headers: {
@@ -101,7 +153,7 @@ export const selectTwoforCompletion = async () => {
         .from('niuz')
         .select('*')
         .is('score', null)
-        .or('scale.is.null,magnitude.is.null,potential.is.null,novelty.is.null,significance.is.null,actionability.is.null,longTerm.is.null,category.is.null')
+        .or('scale.is.null,magnitude.is.null,potential.is.null,novelty.is.null,significance.is.null,actionability.is.null,longTerm.is.null,category.is.null,new_title.is.null')
         .limit(2)
     if (error && error.code !== 'PGRST116') {
         Logger.error(error.message)
@@ -143,4 +195,18 @@ export const listNews = async () => {
         throw new Error(error.message)
     }
     return data;
+}
+export const selectOneForEmbedding = async () => {
+    const client = await createAuthenticatedClient()
+    const {data, error} = await client
+        .from('niuz_with_duplicates')
+        .select('*')
+        .eq('processed', 0)
+        .limit(1)
+        .single();
+    if (error && error.code !== 'PGRST116') {
+        Logger.error(error.message)
+        throw new Error(error.message)
+    }
+    return data
 }
