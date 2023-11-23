@@ -1,4 +1,0 @@
-Historique des chat:
-${history}
-Entrée de suivi: ${question}
-Question autonome:

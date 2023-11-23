@@ -107,7 +107,12 @@ function createLogitBias(): Record<string, number> {
     logitBias['605'] = 100;
     return logitBias;
 }
+
+function areFloatsEqual(a: number, b: number) {
+    return Math.round(a*100000) == Math.round(b*100000);
+}
 export {
+    areFloatsEqual,
     createLogitBias,
     findNullKeys,
     isEmpty,

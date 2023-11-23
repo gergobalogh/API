@@ -1,4 +1,0 @@
-Chat History:
-${history}
-Follow Up Input: ${question}
-Standalone question:
