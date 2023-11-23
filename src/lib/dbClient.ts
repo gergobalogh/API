@@ -79,20 +79,24 @@ export const listStatistics = async () => {
 export const getTotalHigherThanSix = async () => {
     // Get the current date
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    today.setHours(2, 0, 0, 0);
 
     const tomorrow = new Date(today.getTime());
     tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow.setHours(2, 0, 0, 0);
+    const todayString = today.toISOString().replace('T', ' ')
+    const tomorrowString = tomorrow.toISOString().replace('T', ' ')
     const client = await createAuthenticatedClient()
     const {data, error} = await client
         .from('niuz')
         .select('*')
-        .gte('created_at', today)
-        .lte('created_at', tomorrow)
+        .gte('score', 6)
+        .gte('created_at', todayString)
+        .lte('created_at', tomorrowString)
+    console.log(data)
     if (error && error.message) {
         Logger.error(error.message)
         throw new Error(error.message)
     }
-    return data.length;
+   return data.length;
 }

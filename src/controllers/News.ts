@@ -15,10 +15,9 @@ News.get('/list', async (c) => {
 News.get('/statistics', async (c) => {
     const statistics = await listStatistics()
     const total = await getTotalHigherThanSix()
-
     return c.jsonT(
         {
-            newsRead: statistics.titles_read,
+            newsRead: statistics[0].titles_read,
             nrOfNewsWithHighScore: total
         }
     )
