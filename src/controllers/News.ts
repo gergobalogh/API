@@ -3,8 +3,17 @@ import {sleep} from "../lib/helpers.ts";
 import {getTotalHigherThanSix, listNews, listStatistics} from "../lib/dbClient.ts";
 
 const News = new Hono();
-News.get('/list', async (c) => {
+News.get('/list/', async (c) => {
     const news = await listNews()
+    return c.jsonT(
+        {
+            news: news
+        }
+    )
+})
+News.get('/list/:date', async (c) => {
+    const date = c.req.param('date')
+    const news = await listNews(date)
 
     return c.jsonT(
         {

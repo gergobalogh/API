@@ -1,7 +1,5 @@
 import {createClient} from "supabase"
 import {Logger} from './logging/logger.ts'
-import {areFloatsEqual} from "./helpers.ts";
-
 
 export const createAuthenticatedClient = async () => {
     const kv = await Deno.openKv();
@@ -50,12 +48,16 @@ export const createAuthenticatedClient = async () => {
         }
     }
 }
-export const listNews = async () => {
+export const listNews = async (date: any) => {
     const client = await createAuthenticatedClient()
-    const {data, error} = await client
+    let query = client
         .from('niuz')
         .select('*')
         .not('score', 'is', null)
+    if(date) {
+        query = query.gte('created_at', date)
+    }
+    const {data, error} = await query
     if (error && error.message) {
         Logger.error(error.message)
         throw new Error(error.message)
@@ -77,10 +79,8 @@ export const listStatistics = async () => {
 }
 
 export const getTotalHigherThanSix = async () => {
-    // Get the current date
     const today = new Date();
     today.setHours(2, 0, 0, 0);
-
     const tomorrow = new Date(today.getTime());
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(2, 0, 0, 0);
@@ -93,7 +93,6 @@ export const getTotalHigherThanSix = async () => {
         .gte('score', 6)
         .gte('created_at', todayString)
         .lte('created_at', tomorrowString)
-    console.log(data)
     if (error && error.message) {
         Logger.error(error.message)
         throw new Error(error.message)

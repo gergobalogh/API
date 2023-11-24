@@ -54,7 +54,6 @@
     "zod": "https://deno.land/x/zod/mod.ts",
     "cheerio": "https://esm.sh/cheerio@1.0.0-rc.12",
     "supabase": "https://esm.sh/@supabase/supabase-js",
-    "moment": "https://deno.land/x/momentjs@2.29.1-deno/mod.ts",
     "houston": "https://deno.land/x/houston@1.0.0/mod.ts"
   }
 }
