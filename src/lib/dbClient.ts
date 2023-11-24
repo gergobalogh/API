@@ -54,6 +54,7 @@ export const listNews = async (date: any) => {
         .from('niuz')
         .select('*')
         .not('score', 'is', null)
+        .not('content', 'is', null)
     if(date) {
         query = query.gte('created_at', date)
     }
