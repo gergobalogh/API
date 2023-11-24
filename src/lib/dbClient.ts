@@ -55,6 +55,7 @@ export const listNews = async (date: any) => {
         .select('*')
         .not('score', 'is', null)
         .not('content', 'is', null)
+        .order('created_at', {descending: true})
     if(date) {
         query = query.gte('created_at', date)
     }
