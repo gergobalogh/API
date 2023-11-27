@@ -26,7 +26,7 @@ News.get('/statistics', async (c) => {
     const total = await getTotalHigherThanSix()
     return c.jsonT(
         {
-            newsRead: statistics[0].titles_read,
+            newsRead: statistics[0].total_processed,
             nrOfNewsWithHighScore: total
         }
     )

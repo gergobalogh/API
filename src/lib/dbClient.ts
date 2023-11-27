@@ -51,10 +51,10 @@ export const createAuthenticatedClient = async () => {
 export const listNews = async (date: any) => {
     const client = await createAuthenticatedClient()
     let query = client
-        .from('niuz')
+        .from('final_news')
         .select('*')
         .not('score', 'is', null)
-        .not('content', 'is', null)
+        .not('category', 'is', null)
         .order('created_at', {ascending: false})
     if(date) {
         query = query.gte('created_at', date)
@@ -70,7 +70,7 @@ export const listNews = async (date: any) => {
 export const listStatistics = async () => {
     const client = await createAuthenticatedClient()
     const {data, error} = await client
-        .from('statistics')
+        .from('processing_statistics')
         .select('*')
         .eq('date', new Date().toISOString().split('T')[0])
     if (error && error.message) {
@@ -90,7 +90,7 @@ export const getTotalHigherThanSix = async () => {
     const tomorrowString = tomorrow.toISOString().replace('T', ' ')
     const client = await createAuthenticatedClient()
     const {data, error} = await client
-        .from('niuz')
+        .from('final_news')
         .select('*')
         .gte('score', 6)
         .gte('created_at', todayString)
