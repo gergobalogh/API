@@ -73,12 +73,16 @@ export const getDetailsById = async (id: number) => {
         .select('*')
         .eq('final_news_id', id)
         .eq('processed', true)
+        .limit(1)
     const {data, error} = await query
     if (error && error.message) {
         Logger.error(error.message)
         throw new Error(error.message)
     }
-    return data;
+    if(data && data.length > 0) {
+        return data[0];
+    }
+    return []
 }
 
 export const listStatistics = async () => {
