@@ -66,6 +66,20 @@ export const listNews = async (date: any) => {
     }
     return data;
 }
+export const getDetailsById = async (id: number) => {
+    const client = await createAuthenticatedClient()
+    let query = client
+        .from('news_attributes')
+        .select('*')
+        .eq('final_news_id', id)
+        .eq('processed', true)
+    const {data, error} = await query
+    if (error && error.message) {
+        Logger.error(error.message)
+        throw new Error(error.message)
+    }
+    return data;
+}
 
 export const listStatistics = async () => {
     const client = await createAuthenticatedClient()
