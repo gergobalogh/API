@@ -21,7 +21,7 @@ News.get('/list/:date', async (c) => {
         }
     )
 })
-News.get('/list/list/:id', async (c) => {
+News.get('/item/:id', async (c) => {
     const id = c.req.param('id')
     const news = await getDetailsById(id)
     return c.jsonT(
