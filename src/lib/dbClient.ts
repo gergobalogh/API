@@ -1,5 +1,6 @@
 import {createClient} from "supabase"
 import {Logger} from './logging/logger.ts'
+import {getPagination} from "./helpers.ts";
 
 export const createAuthenticatedClient = async () => {
     const kv = await Deno.openKv();
@@ -48,23 +49,23 @@ export const createAuthenticatedClient = async () => {
         }
     }
 }
-export const listNews = async (date: any) => {
+
+export const listNews = async (page: number) => {
+    const {from, to} = getPagination(page, 50)
     const client = await createAuthenticatedClient()
     let query = client
         .from('final_news')
-        .select('*')
+        .select("*", { count: "exact" })
         .not('score', 'is', null)
         .not('category', 'is', null)
-        .order('created_at', {ascending: false})
-    if(date) {
-        query = query.gte('created_at', date)
-    }
-    const {data, error} = await query
+        .order('proximity', {ascending: false})
+        .range(from, to)
+    const {data, count, error} = await query
     if (error && error.message) {
         Logger.error(error.message)
         throw new Error(error.message)
     }
-    return data;
+    return {data, count}
 }
 export const getDetailsById = async (id: number) => {
     const client = await createAuthenticatedClient()
