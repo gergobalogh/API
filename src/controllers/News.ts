@@ -6,12 +6,13 @@ const News = new Hono();
 
 News.get('/list/:page', async (c) => {
     const page = c.req.param('page')
-    const {data, count} = await listNews(page)
+    const {data, count, error} = await listNews(page)
 
     return c.jsonT(
         {
             news: data,
-            count
+            count,
+            error
         }
     )
 })

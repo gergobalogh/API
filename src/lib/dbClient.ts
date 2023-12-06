@@ -62,8 +62,12 @@ export const listNews = async (page: number) => {
         .range(from, to)
     const {data, count, error} = await query
     if (error && error.message) {
+        if(error.code === 'PGRST103' && error.message === 'Requested range not satisfiable') {
+            return {data: null, count: null, error: error.message}
+        }
+        console.log(error)
         Logger.error(error.message)
-        throw new Error(error.message)
+    //    throw new Error(error.message)
     }
     return {data, count}
 }
