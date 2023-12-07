@@ -55,7 +55,7 @@ export const listNews = async (page: number, size: number = 50) => {
     const client = await createAuthenticatedClient()
     let query = client
         .from('final_news')
-        .select("id,original_title,rewritten_title,score,category,proximity", { count: "exact" })
+        .select("id,original_title,rewritten_title,score,category,proximity,url", { count: "exact" })
         .not('score', 'is', null)
         .not('category', 'is', null)
         .order('proximity', {ascending: false})
@@ -77,7 +77,7 @@ export const getDetailsById = async (id: number) => {
     const client = await createAuthenticatedClient()
     let query = client
         .from('news_attributes')
-        .select('scale,magnitude,potential,novelty,impact,actionability,consequences,summary,url')
+        .select('scale,magnitude,potential,novelty,impact,actionability,consequences,summary')
         .eq('final_news_id', id)
         .eq('processed', true)
         .limit(1)
