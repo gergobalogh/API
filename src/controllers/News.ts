@@ -21,7 +21,7 @@ News.get('/item/:id', async (c) => {
     const news = await getDetailsById(id)
     return c.jsonT(
         {
-            newsItem: news
+            ...news
         }
     )
 })
