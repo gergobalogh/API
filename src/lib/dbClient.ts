@@ -50,8 +50,8 @@ export const createAuthenticatedClient = async () => {
     }
 }
 
-export const listNews = async (page: number) => {
-    const {from, to} = getPagination(page, 50)
+export const listNews = async (page: number, size: number = 50) => {
+    const {from, to} = getPagination(page,  size)
     const client = await createAuthenticatedClient()
     let query = client
         .from('final_news')
@@ -63,19 +63,21 @@ export const listNews = async (page: number) => {
     const {data, count, error} = await query
     if (error && error.message) {
         if(error.code === 'PGRST103' && error.message === 'Requested range not satisfiable') {
-            return {data: null, count: null, error: error.message}
+            return {data: null, maxPages: null, error: error.message}
         }
         console.log(error)
         Logger.error(error.message)
     //    throw new Error(error.message)
     }
-    return {data, count}
+    const maxPages = Math.ceil(count / size);
+
+    return {data, maxPages }
 }
 export const getDetailsById = async (id: number) => {
     const client = await createAuthenticatedClient()
     let query = client
         .from('news_attributes')
-        .select('*')
+        .select('scale,magnitude,potential,novelty,impact,actionability,consequences,summary')
         .eq('final_news_id', id)
         .eq('processed', true)
         .limit(1)

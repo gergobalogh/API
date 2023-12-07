@@ -1,18 +1,18 @@
 import {Hono} from "hono";
-import {sleep} from "../lib/helpers.ts";
 import {getTotalHigherThanSix, getDetailsById, listNews, listStatistics} from "../lib/dbClient.ts";
 
 const News = new Hono();
 
 News.get('/list/:page', async (c) => {
     const page = c.req.param('page')
-    const {data, count, error} = await listNews(page)
+    const {data, maxPages, error} = await listNews(page)
 
     return c.jsonT(
         {
             news: data,
-            count,
-            error
+            maxPages,
+            error,
+            page
         }
     )
 })
